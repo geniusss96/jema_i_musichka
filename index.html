@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Для Мухтасар ❤️</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
@@ -18,6 +18,7 @@
             align-items: center;
             overflow: hidden;
             color: #ff4d88;
+            transition: background 0.3s ease;
         }
 
         .card {
@@ -29,11 +30,12 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(255, 77, 136, 0.15);
             backdrop-filter: blur(10px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease, box-shadow 0.3s ease;
             display: none;
             opacity: 0;
             transform: translateY(20px);
             position: absolute;
+            box-sizing: border-box;
         }
 
         .card.active {
@@ -62,7 +64,8 @@
             margin: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(255, 77, 136, 0.3);
-            white-space: nowrap;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         button:hover {
@@ -81,7 +84,7 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            min-height: 80px; /* Чтобы контейнер не схлопывался, если кнопка "убежит" */
+            min-height: 80px; 
             position: relative;
         }
 
@@ -103,6 +106,117 @@
             height: 100%;
             pointer-events: none;
             z-index: 9999;
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 600px) {
+            h1 { font-size: 20px; margin-bottom: 20px; }
+            button { font-size: 16px; padding: 10px 20px; margin: 5px; }
+            .card { padding: 30px 20px; }
+            .btn-row { flex-direction: column; gap: 10px; min-height: 120px; }
+        }
+
+        /* --- Хоррор Стили --- */
+        body.horror-mode {
+            background: #000;
+            color: #ff0000;
+        }
+
+        body.horror-mode .card {
+            background: rgba(20, 0, 0, 0.95);
+            box-shadow: 0 0 40px #ff0000;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+        }
+
+        body.horror-mode h1 {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        #horror-input {
+            width: 80%;
+            padding: 12px;
+            font-size: 18px;
+            font-family: 'Nunito', sans-serif;
+            background: #111;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            outline: none;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 10px #ff0000;
+        }
+
+        #horror-input::placeholder {
+            color: #660000;
+        }
+
+        #creepy-face {
+            margin: 0 auto 20px auto;
+            width: 120px;
+            height: 80px;
+            position: relative;
+            animation: twitch 0.1s infinite;
+        }
+
+        .eyes {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .eye {
+            width: 15px;
+            height: 15px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff0000;
+            animation: blink 3s infinite;
+        }
+
+        .smile {
+            margin-top: 25px;
+            width: 100%;
+            height: 20px;
+            border-bottom: 5px solid #ff0000;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 15px #ff0000;
+        }
+
+        @keyframes twitch {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, 2px); }
+            100% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes blink {
+            0%, 96%, 98% { transform: scaleY(1); }
+            97% { transform: scaleY(0.1); }
+        }
+
+        @keyframes flashGlitch {
+            0% { filter: invert(0); background: #ffe6f0; }
+            20% { filter: invert(1); background: #000; }
+            40% { filter: invert(0); transform: scale(1.05); }
+            60% { filter: invert(1) sepia(1) hue-rotate(300deg); }
+            80% { transform: scale(1); filter: none; }
+            100% { background: #000; }
+        }
+
+        /* --- Контейнер Игры --- */
+        #game-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            background: #000;
+            cursor: none;
         }
     </style>
 </head>
@@ -134,17 +248,46 @@
         </div>
     </div>
 
-    <!-- Screen 4: Q3 -->
+    <!-- Screen 4: Q3 (Ловушка) -->
     <div class="card" id="screen-4">
-        <h1>Любишь ли ты Жема? 🥺</h1>
-        <div class="btn-row">
-            <button id="btn-yes-final" onclick="showResult()">Да! ❤️</button>
-            <button id="btn-no-final" onmouseover="runAway(this)">Нет 😒</button>
+        <h1>Что Жем выберет: пойти с тобой гулять или пойти в катку в Mobile Legends? 🤔</h1>
+        <div class="btn-column">
+            <!-- Если выбирает гулять, пропускаем хоррор и идем к финалу -->
+            <button onclick="nextScreen(4, 7)">Пойти гулять 🥰</button>
+            <!-- Если выбирает катку, запускается хоррор -->
+            <button onclick="triggerHorror()">Катка в Mobile Legends 🎮</button>
         </div>
     </div>
 
-    <!-- Screen 5: Result -->
+    <!-- Screen 5: Horror Input -->
     <div class="card" id="screen-5">
+        <div id="creepy-face">
+            <div class="eyes">
+                <div class="eye"></div>
+                <div class="eye"></div>
+            </div>
+            <div class="smile"></div>
+        </div>
+        <h1>Напиши "Я люблю Жема"</h1>
+        <input type="text" id="horror-input" placeholder="..." oninput="checkHorrorInput()" autocomplete="off">
+    </div>
+
+    <!-- Screen 6: Игра (Canvas) -->
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <!-- Screen 7: Финальный вопрос -->
+    <div class="card" id="screen-7">
+        <h1>Любишь ли ты Жема? 🥺</h1>
+        <div class="btn-row">
+            <button id="btn-yes-final" onclick="showResult()">Да! ❤️</button>
+            <button id="btn-no-final" onmouseover="runAway(this)" ontouchstart="runAway(this)">Нет 😒</button>
+        </div>
+    </div>
+
+    <!-- Screen 8: Result -->
+    <div class="card" id="screen-8">
         <h1 style="font-size: 32px;">Я так и знал! Люблю тебя! ❤️❤️❤️</h1>
         <p style="font-size: 60px; margin: 0;">👩‍❤️‍👨</p>
     </div>
@@ -157,19 +300,27 @@
             const currentCard = document.getElementById(`screen-${current}`);
             const nextCard = document.getElementById(`screen-${next}`);
             
-            currentCard.style.opacity = '0';
-            currentCard.style.transform = 'translateY(-20px)';
-            
-            setTimeout(() => {
-                currentCard.classList.remove('active');
+            if (currentCard) {
+                currentCard.style.opacity = '0';
+                currentCard.style.transform = 'translateY(-20px)';
                 
+                setTimeout(() => {
+                    currentCard.classList.remove('active');
+                    showNext(nextCard);
+                }, 400);
+            } else {
+                showNext(nextCard);
+            }
+        }
+
+        function showNext(nextCard) {
+            if (nextCard) {
                 nextCard.classList.add('active');
-                // Даем браузеру время отрендерить display: block перед анимацией
                 setTimeout(() => {
                     nextCard.style.opacity = '1';
                     nextCard.style.transform = 'translateY(0)';
                 }, 50);
-            }, 400);
+            }
         }
 
         let yesScale = 1;
@@ -180,16 +331,13 @@
         }
 
         function runAway(btn) {
-            // Если позиция еще не fixed, делаем fixed
             if (btn.style.position !== 'fixed') {
                 btn.style.position = 'fixed';
             }
             
-            // Вычисляем максимальные координаты с учетом размеров кнопки
             const maxX = window.innerWidth - btn.offsetWidth - 20;
             const maxY = window.innerHeight - btn.offsetHeight - 20;
             
-            // Генерируем случайные координаты
             const randomX = Math.max(20, Math.floor(Math.random() * maxX));
             const randomY = Math.max(20, Math.floor(Math.random() * maxY));
             
@@ -198,11 +346,10 @@
         }
 
         function showResult() {
-            // Убираем убегающую кнопку, чтобы она больше не мешалась
             const noBtn = document.getElementById('btn-no-final');
             noBtn.style.display = 'none';
 
-            nextScreen(4, 5);
+            nextScreen(7, 8);
 
             setTimeout(() => {
                 fireConfetti();
@@ -227,12 +374,161 @@
 
                 var particleCount = 50 * (timeLeft / duration);
                 
-                // Эффект падающих конфетти из случайных мест сверху
                 confetti({
                     ...defaults, particleCount,
                     origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 }
                 });
             }, 250);
+        }
+
+        /* --- ХОРРОР ЛОГИКА --- */
+
+        function triggerHorror() {
+            // Эффект глитча
+            document.body.style.animation = 'flashGlitch 0.6s forwards';
+            
+            setTimeout(() => {
+                document.body.classList.add('horror-mode');
+                document.body.style.animation = ''; // сброс
+                nextScreen(4, 5);
+            }, 600);
+        }
+
+        function checkHorrorInput() {
+            const input = document.getElementById('horror-input');
+            const val = input.value.toLowerCase().trim();
+            // Учитываем возможные опечатки или отсутствие пробелов
+            if (val === 'я люблю жема' || val === 'ялюблюжема' || val === 'я люблю жем') {
+                input.blur(); // убрать клавиатуру на телефоне
+                startMiniGame();
+            }
+        }
+
+        /* --- ИГРА ЛОГИКА --- */
+        let gameActive = false;
+        let player = { x: window.innerWidth/2, y: window.innerHeight - 100, size: 20 };
+        let enemy = { x: window.innerWidth/2, y: 50, size: 30, speed: 1 };
+        let canvas, ctx;
+
+        function startMiniGame() {
+            document.getElementById('screen-5').classList.remove('active');
+            
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.style.display = 'block';
+            
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            player.x = canvas.width / 2;
+            player.y = canvas.height - 100;
+            enemy.x = canvas.width / 2;
+            enemy.y = 50;
+            
+            // Базовая скорость зависит от экрана
+            enemy.speed = Math.min(canvas.width, canvas.height) / 300; 
+            
+            window.addEventListener('mousemove', movePlayer);
+            window.addEventListener('touchmove', movePlayerTouch, {passive: false});
+            
+            gameActive = true;
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function movePlayer(e) {
+            if(!gameActive) return;
+            player.x = e.clientX;
+            player.y = e.clientY;
+        }
+
+        function movePlayerTouch(e) {
+            if(!gameActive) return;
+            e.preventDefault(); 
+            player.x = e.touches[0].clientX;
+            player.y = e.touches[0].clientY;
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+            
+            // Очистка
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Фон текст
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+            ctx.font = 'bold 40px Nunito';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('БЕГИ ОТ ЖЕМА!', canvas.width/2, canvas.height/2);
+
+            // Движение врага
+            let dx = player.x - enemy.x;
+            let dy = player.y - enemy.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if (dist > 0) {
+                enemy.x += (dx / dist) * enemy.speed;
+                enemy.y += (dy / dist) * enemy.speed;
+            }
+            
+            // Постепенное ускорение (неизбежность)
+            enemy.speed += 0.005;
+            
+            // Рисуем игрока (Мухтасар)
+            ctx.font = '30px Arial';
+            ctx.fillText('❤️', player.x, player.y);
+            
+            // Рисуем врага (Страшный Жем)
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#000'; // глаза
+            ctx.beginPath();
+            ctx.arc(enemy.x - 10, enemy.y - 10, 5, 0, Math.PI * 2);
+            ctx.arc(enemy.x + 10, enemy.y - 10, 5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#000'; // улыбка
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y + 5, 12, 0.1 * Math.PI, 0.9 * Math.PI, false);
+            ctx.stroke();
+            
+            // Проверка столкновения
+            if (dist < 30) {
+                gameOver();
+            } else {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function gameOver() {
+            gameActive = false;
+            window.removeEventListener('mousemove', movePlayer);
+            window.removeEventListener('touchmove', movePlayerTouch);
+            window.removeEventListener('resize', resizeCanvas);
+            
+            // Скример эффект (мигание красным)
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.style.background = '#ff0000';
+            
+            setTimeout(() => {
+                gameContainer.style.display = 'none';
+                document.body.classList.remove('horror-mode');
+                
+                // Возвращаем милый экран 7
+                showNext(document.getElementById('screen-7'));
+            }, 300);
         }
     </script>
 </body>
