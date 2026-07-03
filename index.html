@@ -36,10 +36,14 @@
             transform: translateY(20px);
             position: absolute;
             box-sizing: border-box;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .card.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             opacity: 1;
             transform: translateY(0);
             z-index: 1;
@@ -240,7 +244,6 @@
 </head>
 <body>
 
-    <!-- Экран старта для активации аудио контекста -->
     <div id="sound-overlay">
         <h1 style="color:#ff4d88; font-size: 32px; margin-bottom: 10px;">Для Мухтасар ❤️</h1>
         <p style="color:#ff4d88; font-size: 18px; margin-bottom: 40px; opacity: 0.8;">(Обязательно включи звук 🔊)</p>
@@ -249,13 +252,12 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Screen 1: Welcome -->
+    <!-- Милые вопросы перед ловушкой -->
     <div class="card" id="screen-1">
         <h1>Специальный тест для Мухтасар ❤️</h1>
         <button onclick="nextScreen(1, 2)">Поехали! 🚀</button>
     </div>
 
-    <!-- Screen 2: Q1 -->
     <div class="card" id="screen-2">
         <h1>Кто самый лучший парень на свете? 🤔</h1>
         <div class="btn-column">
@@ -265,7 +267,6 @@
         </div>
     </div>
 
-    <!-- Screen 3: Q2 -->
     <div class="card" id="screen-3">
         <h1>Сильно соскучилась? 🥺</h1>
         <div class="btn-row">
@@ -274,17 +275,77 @@
         </div>
     </div>
 
-    <!-- Screen 4: Q3 (Ловушка) -->
     <div class="card" id="screen-4">
+        <h1>Как сильно ты меня любишь? 🥺</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(4, 5)">До луны и обратно 🌙</button>
+            <button onclick="nextScreen(4, 5)">Больше жизни ❤️</button>
+            <button onclick="nextScreen(4, 5)">Бесконечно ♾️</button>
+        </div>
+    </div>
+
+    <div class="card" id="screen-5">
+        <h1>Чьи объятия самые теплые? 🤗</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(5, 6)">Жема 🥰</button>
+            <button onclick="nextScreen(5, 6)">Большого плюшевого мишки 🧸 (нет, Жема)</button>
+        </div>
+    </div>
+
+    <div class="card" id="screen-6">
+        <h1>Какая наша любимая еда? 🍕</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(6, 7)">Пицца 🍕</button>
+            <button onclick="nextScreen(6, 7)">Суши 🍣</button>
+            <button onclick="nextScreen(6, 7)">Бургеры 🍔</button>
+        </div>
+    </div>
+
+    <div class="card" id="screen-7">
+        <h1>Ты знаешь, что ты самая красивая девочка на свете? 🌸</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(7, 8)">Да, знаю 💅</button>
+            <button onclick="nextScreen(7, 8)">Теперь точно знаю 😊</button>
+        </div>
+    </div>
+
+    <div class="card" id="screen-8">
+        <h1>Хочешь узнать секрет? 🤫</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(8, 9)">Давай!</button>
+            <button onclick="nextScreen(8, 9)">Очень жду!</button>
+        </div>
+    </div>
+
+    <div class="card" id="screen-9">
+        <h1>Секрет: Я безумно тебя обожаю! ❤️❤️❤️</h1>
+        <button onclick="nextScreen(9, 10)">Ой, как мииило 🥰</button>
+    </div>
+
+    <div class="card" id="screen-10">
+        <h1>Обещаешь всегда быть моей? 💍</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(10, 11)">Обещаю 🤞</button>
+            <button onclick="nextScreen(10, 11)">Всегда-всегда! ❤️</button>
+        </div>
+    </div>
+
+    <div class="card" id="screen-11">
+        <h1>Готова к следующему важному вопросу? 👀</h1>
+        <button onclick="nextScreen(11, 12)">Да, погнали! 🚀</button>
+    </div>
+
+    <!-- Screen 12: Q3 (Ловушка) -->
+    <div class="card" id="screen-12">
         <h1>Что Жем выберет: пойти с тобой гулять или пойти в катку в Mobile Legends? 🤔</h1>
         <div class="btn-column">
-            <button onclick="nextScreen(4, 7)">Пойти гулять 🥰</button>
+            <button onclick="nextScreen(12, 15)">Пойти гулять 🥰</button>
             <button onclick="triggerHorror()">Катка в Mobile Legends 🎮</button>
         </div>
     </div>
 
-    <!-- Screen 5: Horror Input -->
-    <div class="card" id="screen-5">
+    <!-- Screen 13: Horror Input -->
+    <div class="card" id="screen-13">
         <div id="creepy-face">
             <div class="eyes">
                 <div class="eye"></div>
@@ -296,13 +357,13 @@
         <input type="text" id="horror-input" placeholder="..." oninput="checkHorrorInput()" autocomplete="off">
     </div>
 
-    <!-- Screen 6: Игра (Canvas) -->
+    <!-- Screen 14: Игра (Canvas) -->
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <!-- Screen 7: Финальный вопрос -->
-    <div class="card" id="screen-7">
+    <!-- Screen 15: Финальный вопрос -->
+    <div class="card" id="screen-15">
         <h1>Любишь ли ты Жема? 🥺</h1>
         <div class="btn-row">
             <button id="btn-yes-final" onclick="showResult()">Да! ❤️</button>
@@ -310,8 +371,8 @@
         </div>
     </div>
 
-    <!-- Screen 8: Result -->
-    <div class="card" id="screen-8">
+    <!-- Screen 16: Result -->
+    <div class="card" id="screen-16">
         <h1 style="font-size: 32px;">Я так и знал! Люблю тебя! ❤️❤️❤️</h1>
         <p style="font-size: 60px; margin: 0;">👩‍❤️‍👨</p>
     </div>
@@ -335,7 +396,6 @@
         }
 
         function playWebAudioJumpscare() {
-            // Резервный скример, если нет файла scare.mp3
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const bufferSize = audioCtx.sampleRate * 1.5;
@@ -398,11 +458,13 @@
                 btn.style.position = 'fixed';
             }
             
-            const maxX = window.innerWidth - btn.offsetWidth - 20;
-            const maxY = window.innerHeight - btn.offsetHeight - 20;
+            // Чтобы кнопка не убегала за пределы экрана и ее всегда было видно
+            const padding = 60; // отступы от краев (чтобы не улетела под адресную строку на телефоне)
+            const maxX = window.innerWidth - btn.offsetWidth - padding;
+            const maxY = window.innerHeight - btn.offsetHeight - padding;
             
-            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
             
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
@@ -412,7 +474,7 @@
             const noBtn = document.getElementById('btn-no-final');
             noBtn.style.display = 'none';
 
-            nextScreen(7, 8);
+            nextScreen(15, 16); // Теперь финал - это 15 и 16 экраны
 
             setTimeout(() => {
                 fireConfetti();
@@ -448,15 +510,15 @@
 
         function triggerHorror() {
             cuteAudio.pause();
+            creepyAudio.currentTime = 0;
             creepyAudio.play().catch(() => console.log('Нет creepy.mp3'));
 
-            // Эффект глитча
             document.body.style.animation = 'flashGlitch 0.6s forwards';
             
             setTimeout(() => {
                 document.body.classList.add('horror-mode');
                 document.body.style.animation = ''; // сброс
-                nextScreen(4, 5);
+                nextScreen(12, 13); // Переход на ввод текста (12->13)
             }, 600);
         }
 
@@ -476,7 +538,7 @@
         let canvas, ctx;
 
         function startMiniGame() {
-            document.getElementById('screen-5').classList.remove('active');
+            document.getElementById('screen-13').classList.remove('active');
             
             const gameContainer = document.getElementById('game-container');
             gameContainer.style.display = 'block';
@@ -492,7 +554,6 @@
             enemy.x = canvas.width / 2;
             enemy.y = 50;
             
-            // Жем начинает очень медленно
             enemy.speed = Math.min(canvas.width, canvas.height) / 1200; 
             
             window.addEventListener('mousemove', movePlayer);
@@ -523,18 +584,15 @@
         function gameLoop() {
             if (!gameActive) return;
             
-            // Очистка
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Фон текст
             ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
             ctx.font = 'bold 40px Nunito';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('БЕГИ ОТ ЖЕМА!', canvas.width/2, canvas.height/2);
 
-            // Движение врага
             let dx = player.x - enemy.x;
             let dy = player.y - enemy.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
@@ -544,32 +602,28 @@
                 enemy.y += (dy / dist) * enemy.speed;
             }
             
-            // Очень плавное ускорение (по чуть-чуть)
             enemy.speed += 0.001;
             
-            // Рисуем игрока (Мухтасар)
             ctx.font = '30px Arial';
             ctx.fillText('❤️', player.x, player.y);
             
-            // Рисуем врага (Страшный Жем)
             ctx.fillStyle = '#ff0000';
             ctx.beginPath();
             ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
             ctx.fill();
             
-            ctx.fillStyle = '#000'; // глаза
+            ctx.fillStyle = '#000';
             ctx.beginPath();
             ctx.arc(enemy.x - 10, enemy.y - 10, 5, 0, Math.PI * 2);
             ctx.arc(enemy.x + 10, enemy.y - 10, 5, 0, Math.PI * 2);
             ctx.fill();
             
-            ctx.strokeStyle = '#000'; // улыбка
+            ctx.strokeStyle = '#000';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.arc(enemy.x, enemy.y + 5, 12, 0.1 * Math.PI, 0.9 * Math.PI, false);
             ctx.stroke();
             
-            // Проверка столкновения
             if (dist < 30) {
                 gameOver();
             } else {
@@ -583,11 +637,10 @@
             window.removeEventListener('touchmove', movePlayerTouch);
             window.removeEventListener('resize', resizeCanvas);
             
-            // Звук скримера
             creepyAudio.pause();
+            scareAudio.currentTime = 0;
             scareAudio.play().catch(() => playWebAudioJumpscare());
 
-            // Скример эффект (мигание красным) на 1.5 секунды
             const gameContainer = document.getElementById('game-container');
             gameContainer.style.background = '#ff0000';
             
@@ -595,13 +648,11 @@
                 gameContainer.style.display = 'none';
                 document.body.classList.remove('horror-mode');
                 
-                // Включаем обратно милую музыку
                 cuteAudio.currentTime = 0;
                 cuteAudio.play().catch(() => {});
                 
-                // Возвращаем милый экран 7
-                showNext(document.getElementById('screen-7'));
-            }, 1500); // Экран держится 1.5 секунды для максимального эффекта
+                showNext(document.getElementById('screen-15'));
+            }, 1500); 
         }
     </script>
 </body>
