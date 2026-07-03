@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Мухтасар ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ffe6f0 0%, #ffcce0 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #ff4d88;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 77, 136, 0.15);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            position: absolute;
+        }
+
+        .card.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        button {
+            background: #ff4d88;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 77, 136, 0.3);
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #ff3377;
+        }
+
+        .btn-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 80px; /* Чтобы контейнер не схлопывался, если кнопка "убежит" */
+            position: relative;
+        }
+
+        #btn-yes-2 {
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        #btn-no-final {
+            position: relative;
+            z-index: 100;
+            transition: left 0.2s ease, top 0.2s ease;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Screen 1: Welcome -->
+    <div class="card active" id="screen-1">
+        <h1>Специальный тест для Мухтасар ❤️</h1>
+        <button onclick="nextScreen(1, 2)">Начать ✨</button>
+    </div>
+
+    <!-- Screen 2: Q1 -->
+    <div class="card" id="screen-2">
+        <h1>Кто самый лучший парень на свете? 🤔</h1>
+        <div class="btn-column">
+            <button onclick="nextScreen(2, 3)">Жем 💖</button>
+            <button onclick="nextScreen(2, 3)">Точно Жем 😍</button>
+            <button onclick="nextScreen(2, 3)">Конечно же Жем 💘</button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Q2 -->
+    <div class="card" id="screen-3">
+        <h1>Сильно соскучилась? 🥺</h1>
+        <div class="btn-row">
+            <button id="btn-yes-2" onclick="nextScreen(3, 4)">Да 🥰</button>
+            <button id="btn-no-2" onmouseover="growYesBtn()">Не очень 🙄</button>
+        </div>
+    </div>
+
+    <!-- Screen 4: Q3 -->
+    <div class="card" id="screen-4">
+        <h1>Любишь ли ты Жема? 🥺</h1>
+        <div class="btn-row">
+            <button id="btn-yes-final" onclick="showResult()">Да! ❤️</button>
+            <button id="btn-no-final" onmouseover="runAway(this)">Нет 😒</button>
+        </div>
+    </div>
+
+    <!-- Screen 5: Result -->
+    <div class="card" id="screen-5">
+        <h1 style="font-size: 32px;">Я так и знал! Люблю тебя! ❤️❤️❤️</h1>
+        <p style="font-size: 60px; margin: 0;">👩‍❤️‍👨</p>
+    </div>
+
+    <!-- Подключаем библиотеку для конфетти -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        function nextScreen(current, next) {
+            const currentCard = document.getElementById(`screen-${current}`);
+            const nextCard = document.getElementById(`screen-${next}`);
+            
+            currentCard.style.opacity = '0';
+            currentCard.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                currentCard.classList.remove('active');
+                
+                nextCard.classList.add('active');
+                // Даем браузеру время отрендерить display: block перед анимацией
+                setTimeout(() => {
+                    nextCard.style.opacity = '1';
+                    nextCard.style.transform = 'translateY(0)';
+                }, 50);
+            }, 400);
+        }
+
+        let yesScale = 1;
+        function growYesBtn() {
+            yesScale += 0.4;
+            const yesBtn = document.getElementById('btn-yes-2');
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }
+
+        function runAway(btn) {
+            // Если позиция еще не fixed, делаем fixed
+            if (btn.style.position !== 'fixed') {
+                btn.style.position = 'fixed';
+            }
+            
+            // Вычисляем максимальные координаты с учетом размеров кнопки
+            const maxX = window.innerWidth - btn.offsetWidth - 20;
+            const maxY = window.innerHeight - btn.offsetHeight - 20;
+            
+            // Генерируем случайные координаты
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+            
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+
+        function showResult() {
+            // Убираем убегающую кнопку, чтобы она больше не мешалась
+            const noBtn = document.getElementById('btn-no-final');
+            noBtn.style.display = 'none';
+
+            nextScreen(4, 5);
+
+            setTimeout(() => {
+                fireConfetti();
+            }, 400);
+        }
+
+        function fireConfetti() {
+            var duration = 15 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                
+                // Эффект падающих конфетти из случайных мест сверху
+                confetti({
+                    ...defaults, particleCount,
+                    origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 }
+                });
+            }, 250);
+        }
+    </script>
+</body>
+</html>
