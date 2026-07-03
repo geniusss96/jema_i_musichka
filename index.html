@@ -95,7 +95,7 @@
         #btn-no-final {
             position: relative;
             z-index: 100;
-            transition: left 0.2s ease, top 0.2s ease;
+            transition: left 0.5s ease-out, top 0.5s ease-out;
         }
 
         #confetti-canvas {
@@ -429,8 +429,8 @@
             enemy.x = canvas.width / 2;
             enemy.y = 50;
             
-            // Базовая скорость зависит от экрана
-            enemy.speed = Math.min(canvas.width, canvas.height) / 300; 
+            // Жем начинает очень медленно
+            enemy.speed = Math.min(canvas.width, canvas.height) / 1200; 
             
             window.addEventListener('mousemove', movePlayer);
             window.addEventListener('touchmove', movePlayerTouch, {passive: false});
@@ -481,8 +481,8 @@
                 enemy.y += (dy / dist) * enemy.speed;
             }
             
-            // Постепенное ускорение (неизбежность)
-            enemy.speed += 0.005;
+            // Очень плавное ускорение (по чуть-чуть)
+            enemy.speed += 0.001;
             
             // Рисуем игрока (Мухтасар)
             ctx.font = '30px Arial';
