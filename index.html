@@ -210,6 +210,32 @@
             100% { background: #000; }
         }
 
+        /* --- Эффект Таноса --- */
+        @keyframes thanosSnap {
+            0% {
+                opacity: 1;
+                filter: blur(0);
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                opacity: 0.5;
+                filter: blur(4px);
+                transform: scale(1.1) translateY(-10px);
+                letter-spacing: 2px;
+            }
+            100% {
+                opacity: 0;
+                filter: blur(10px);
+                transform: scale(1.5) translateY(-30px);
+                letter-spacing: 5px;
+            }
+        }
+
+        .dust-effect {
+            animation: thanosSnap 1.5s forwards ease-in;
+            pointer-events: none;
+        }
+
         /* --- Контейнер Игры --- */
         #game-container {
             display: none;
@@ -339,7 +365,7 @@
     <div class="card" id="screen-12">
         <h1>Что Жем выберет: пойти с тобой гулять или пойти в катку в Mobile Legends? 🤔</h1>
         <div class="btn-column">
-            <button onclick="nextScreen(12, 15)">Пойти гулять 🥰</button>
+            <button onclick="snapButton(this)">Пойти гулять 🥰</button>
             <button onclick="triggerHorror()">Катка в Mobile Legends 🎮</button>
         </div>
     </div>
@@ -454,7 +480,13 @@
 
         function runAway(btn, e) {
             if(e && e.type === 'touchstart') e.preventDefault();
-            if (btn.style.position !== 'fixed') {
+            
+            // Выносим кнопку в корень body, чтобы transform карточки не ломал position: fixed
+            if (btn.parentElement && btn.parentElement.classList.contains('btn-row')) {
+                document.body.appendChild(btn);
+                btn.style.position = 'fixed';
+                btn.style.zIndex = '9999';
+            } else if (btn.style.position !== 'fixed') {
                 btn.style.position = 'fixed';
             }
             
@@ -507,6 +539,13 @@
         }
 
         /* --- ХОРРОР ЛОГИКА --- */
+
+        function snapButton(btn) {
+            btn.classList.add('dust-effect');
+            setTimeout(() => {
+                btn.style.display = 'none';
+            }, 1500);
+        }
 
         function triggerHorror() {
             cuteAudio.pause();
