@@ -218,15 +218,41 @@
             background: #000;
             cursor: none;
         }
+
+        /* Экран старта для аудио */
+        #sound-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffe6f0;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Экран старта для активации аудио контекста -->
+    <div id="sound-overlay">
+        <h1 style="color:#ff4d88; font-size: 32px; margin-bottom: 10px;">Для Мухтасар ❤️</h1>
+        <p style="color:#ff4d88; font-size: 18px; margin-bottom: 40px; opacity: 0.8;">(Обязательно включи звук 🔊)</p>
+        <button onclick="startExperience()" style="padding: 15px 40px; font-size: 22px; box-shadow: 0 10px 20px rgba(255, 77, 136, 0.4);">Начать ✨</button>
+    </div>
+
     <canvas id="confetti-canvas"></canvas>
 
     <!-- Screen 1: Welcome -->
-    <div class="card active" id="screen-1">
+    <div class="card" id="screen-1">
         <h1>Специальный тест для Мухтасар ❤️</h1>
-        <button onclick="nextScreen(1, 2)">Начать ✨</button>
+        <button onclick="nextScreen(1, 2)">Поехали! 🚀</button>
     </div>
 
     <!-- Screen 2: Q1 -->
@@ -252,9 +278,7 @@
     <div class="card" id="screen-4">
         <h1>Что Жем выберет: пойти с тобой гулять или пойти в катку в Mobile Legends? 🤔</h1>
         <div class="btn-column">
-            <!-- Если выбирает гулять, пропускаем хоррор и идем к финалу -->
             <button onclick="nextScreen(4, 7)">Пойти гулять 🥰</button>
-            <!-- Если выбирает катку, запускается хоррор -->
             <button onclick="triggerHorror()">Катка в Mobile Legends 🎮</button>
         </div>
     </div>
@@ -296,6 +320,43 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <script>
+        // --- АУДИО ЛОГИКА ---
+        const cuteAudio = new Audio('cute.mp3');
+        cuteAudio.loop = true;
+        const creepyAudio = new Audio('creepy.mp3');
+        creepyAudio.loop = true;
+        const scareAudio = new Audio('scare.mp3');
+
+        function startExperience() {
+            document.getElementById('sound-overlay').style.display = 'none';
+            document.getElementById('screen-1').classList.add('active');
+            
+            cuteAudio.play().catch(() => console.log('Файл cute.mp3 не найден, играем без музыки'));
+        }
+
+        function playWebAudioJumpscare() {
+            // Резервный скример, если нет файла scare.mp3
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const bufferSize = audioCtx.sampleRate * 1.5;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1000;
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.setValueAtTime(2, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+                noise.connect(filter); filter.connect(gainNode); gainNode.connect(audioCtx.destination);
+                noise.start();
+            } catch(e) {}
+        }
+
+
+        // --- ЛОГИКА ЭКРАНОВ ---
         function nextScreen(current, next) {
             const currentCard = document.getElementById(`screen-${current}`);
             const nextCard = document.getElementById(`screen-${next}`);
@@ -386,6 +447,9 @@
         /* --- ХОРРОР ЛОГИКА --- */
 
         function triggerHorror() {
+            cuteAudio.pause();
+            creepyAudio.play().catch(() => console.log('Нет creepy.mp3'));
+
             // Эффект глитча
             document.body.style.animation = 'flashGlitch 0.6s forwards';
             
@@ -399,9 +463,8 @@
         function checkHorrorInput() {
             const input = document.getElementById('horror-input');
             const val = input.value.toLowerCase().trim();
-            // Учитываем возможные опечатки или отсутствие пробелов
             if (val === 'я люблю жема' || val === 'ялюблюжема' || val === 'я люблю жем') {
-                input.blur(); // убрать клавиатуру на телефоне
+                input.blur(); 
                 startMiniGame();
             }
         }
@@ -520,7 +583,11 @@
             window.removeEventListener('touchmove', movePlayerTouch);
             window.removeEventListener('resize', resizeCanvas);
             
-            // Скример эффект (мигание красным)
+            // Звук скримера
+            creepyAudio.pause();
+            scareAudio.play().catch(() => playWebAudioJumpscare());
+
+            // Скример эффект (мигание красным) на 1.5 секунды
             const gameContainer = document.getElementById('game-container');
             gameContainer.style.background = '#ff0000';
             
@@ -528,9 +595,13 @@
                 gameContainer.style.display = 'none';
                 document.body.classList.remove('horror-mode');
                 
+                // Включаем обратно милую музыку
+                cuteAudio.currentTime = 0;
+                cuteAudio.play().catch(() => {});
+                
                 // Возвращаем милый экран 7
                 showNext(document.getElementById('screen-7'));
-            }, 300);
+            }, 1500); // Экран держится 1.5 секунды для максимального эффекта
         }
     </script>
 </body>
