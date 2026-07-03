@@ -297,7 +297,7 @@
         <h1>Сильно соскучилась? 🥺</h1>
         <div class="btn-row">
             <button id="btn-yes-2" onclick="nextScreen(3, 4)">Да 🥰</button>
-            <button id="btn-no-2" onmouseover="growYesBtn()" onclick="growYesBtn()" ontouchstart="growYesBtn(event)">Не очень 🙄</button>
+            <button id="btn-no-2" onmouseover="growYesBtn(event)" onclick="growYesBtn(event)" ontouchstart="growYesBtn(event)">Не очень 🙄</button>
         </div>
     </div>
 
@@ -385,6 +385,16 @@
 
     <!-- Screen 14: Игра (Canvas) -->
     <div id="game-container">
+        <div id="game-tutorial" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(20,0,0,0.95); padding:30px; border:2px solid #ff0000; border-radius:15px; text-align:center; color:#ff0000; z-index:1001; width:85%; max-width:400px; box-shadow:0 0 30px #ff0000; display:none;">
+            <h2 style="margin-top:0; color:#ff0000; text-shadow:0 0 10px #ff0000;">⚠️ ВНИМАНИЕ ⚠️</h2>
+            <p style="font-size:18px; margin-bottom:15px;">Твоя цель — выжить.</p>
+            <p style="font-size:16px; margin-bottom:15px; text-align:left; line-height:1.5;">
+                <b>📱 На телефоне:</b> Води пальцем по экрану (не отрывая его), чтобы твое сердечко ❤️ убегало.<br><br>
+                <b>💻 На ПК:</b> Сердечко ❤️ двигается за курсором мыши.
+            </p>
+            <p style="font-size:16px; color:#ff4d4d;">Не дай Страшному Жему 😈 догнать тебя! Он будет ускоряться.</p>
+            <button onclick="startGamePlay()" style="background:#ff0000; color:#000; box-shadow:0 0 15px #ff0000; margin-top:10px; width:100%;">Я готова бежать!</button>
+        </div>
         <canvas id="gameCanvas"></canvas>
     </div>
 
@@ -393,7 +403,7 @@
         <h1>Любишь ли ты Жема? 🥺</h1>
         <div class="btn-row">
             <button id="btn-yes-final" onclick="showResult()">Да! ❤️</button>
-            <button id="btn-no-final" onmouseover="runAway(this)" onclick="runAway(this)" ontouchstart="runAway(this, event)">Нет 😒</button>
+            <button id="btn-no-final" onmouseover="runAway(this, event)" onclick="runAway(this, event)" ontouchstart="runAway(this, event)">Нет 😒</button>
         </div>
     </div>
 
@@ -506,7 +516,7 @@
             const noBtn = document.getElementById('btn-no-final');
             noBtn.style.display = 'none';
 
-            nextScreen(15, 16); // Теперь финал - это 15 и 16 экраны
+            nextScreen(15, 16); 
 
             setTimeout(() => {
                 fireConfetti();
@@ -557,7 +567,7 @@
             setTimeout(() => {
                 document.body.classList.add('horror-mode');
                 document.body.style.animation = ''; // сброс
-                nextScreen(12, 13); // Переход на ввод текста (12->13)
+                nextScreen(12, 13); // Переход на ввод текста
             }, 600);
         }
 
@@ -582,6 +592,8 @@
             const gameContainer = document.getElementById('game-container');
             gameContainer.style.display = 'block';
             
+            document.getElementById('game-tutorial').style.display = 'block';
+            
             canvas = document.getElementById('gameCanvas');
             ctx = canvas.getContext('2d');
             
@@ -595,6 +607,11 @@
             
             enemy.speed = Math.min(canvas.width, canvas.height) / 1200; 
             
+            drawGameFrame();
+        }
+
+        function startGamePlay() {
+            document.getElementById('game-tutorial').style.display = 'none';
             window.addEventListener('mousemove', movePlayer);
             window.addEventListener('touchmove', movePlayerTouch, {passive: false});
             
@@ -605,6 +622,7 @@
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            if(!gameActive && canvas) drawGameFrame();
         }
 
         function movePlayer(e) {
@@ -620,9 +638,7 @@
             player.y = e.touches[0].clientY;
         }
 
-        function gameLoop() {
-            if (!gameActive) return;
-            
+        function drawGameFrame() {
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
@@ -632,6 +648,30 @@
             ctx.textBaseline = 'middle';
             ctx.fillText('БЕГИ ОТ ЖЕМА!', canvas.width/2, canvas.height/2);
 
+            ctx.font = '30px Arial';
+            ctx.fillText('❤️', player.x, player.y);
+            
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#000'; // глаза
+            ctx.beginPath();
+            ctx.arc(enemy.x - 10, enemy.y - 10, 5, 0, Math.PI * 2);
+            ctx.arc(enemy.x + 10, enemy.y - 10, 5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#000'; // улыбка
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y + 5, 12, 0.1 * Math.PI, 0.9 * Math.PI, false);
+            ctx.stroke();
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+            
             let dx = player.x - enemy.x;
             let dy = player.y - enemy.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
@@ -643,25 +683,7 @@
             
             enemy.speed += 0.001;
             
-            ctx.font = '30px Arial';
-            ctx.fillText('❤️', player.x, player.y);
-            
-            ctx.fillStyle = '#ff0000';
-            ctx.beginPath();
-            ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(enemy.x - 10, enemy.y - 10, 5, 0, Math.PI * 2);
-            ctx.arc(enemy.x + 10, enemy.y - 10, 5, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(enemy.x, enemy.y + 5, 12, 0.1 * Math.PI, 0.9 * Math.PI, false);
-            ctx.stroke();
+            drawGameFrame();
             
             if (dist < 30) {
                 gameOver();
